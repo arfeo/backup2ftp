@@ -139,7 +139,7 @@ foreach($files as $file) {
 
 	$y++;
 
-	echo '<tr style="background-color:#' . (($y % 2 == 0) ? 'f0f0f0' : 'fff') . ';"><td width="5%" style="padding:5px;"><input type="checkbox" xchecked="checked" class="files" id="' . $file . '" name="' . $file . '"></td><td width="60%" style="padding:5px;"><label for="' . $file . '">' . $file . '</label></td><td width="35%" style="padding:5px;">' . round(filesize($_SERVER['DOCUMENT_ROOT'] . "/bitrix/backup/" . $file) / 1024 / 1024, 2) . ' Мб</td></tr>';
+	echo '<tr style="background-color:#' . (($y % 2 == 0) ? 'f0f0f0' : 'fff') . ';"><td width="5%" style="padding:5px;"><input type="checkbox" xchecked="checked" class="files" id="' . $file . '" name="' . $file . '"></td><td width="60%" style="padding:5px;"><label for="' . $file . '">' . $file . '</label></td><td width="15%" style="padding:5px;">' . round(filesize($_SERVER['DOCUMENT_ROOT'] . "/bitrix/backup/" . $file) / 1024 / 1024, 2) . ' Мб</td><td width="20%" style="padding:5px;">' . date("d-m-Y H:i:s", filemtime($_SERVER['DOCUMENT_ROOT'] . "/bitrix/backup/" . $file)) . '</td></tr>';
 
 }
 
