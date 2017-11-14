@@ -9,7 +9,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/main/include/prolog_ad
 require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/main/include/prolog_admin_after.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/func.php";
 
-$APPLICATION->SetTitle("Копирование");
+$APPLICATION->SetTitle("Копирование на сервер FTP");
+$APPLICATION->SetAdditionalCSS("/bitrix/css/backup2ftp/styles.css");
 
 $app = Application::getInstance();
 $context = $app->getContext();
@@ -22,14 +23,14 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 
 	$files = $request->get('files');
 
-	// Установка соединения
+	// Устанавливаем соединение
 	$ftp = ftp_connect(Option::get(ADMIN_MODULE_NAME, "domain"), Option::get(ADMIN_MODULE_NAME, "port"));
 
 	if($ftp !== false) {
 
 		if(Option::get(ADMIN_MODULE_NAME, "auth") == 'on') {
 
-			// Проверка имени пользователя и пароля
+			// Проверяем имя пользователя и пароль (при необходимости)
 			$login_result = ftp_login($ftp, Option::get(ADMIN_MODULE_NAME, "login"), Option::get(ADMIN_MODULE_NAME, "pwd"));
 
 			if($login_result === true) {
@@ -83,7 +84,7 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 
 		}
 
-		// Закрытие соединения
+		// Закрываем соединение
 		ftp_close($ftp);
 
 	} else {
@@ -127,34 +128,51 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 
 ?>
 
-<p><strong>Выбрать файлы для копирования:</strong></p>
-<div style="background-color:#fff; min-height:300px; max-height:300px; overflow:auto; border:1px solid #aaa; margin-bottom:10px">
-<table cellpadding="0" cellspacing="0" width="100%">
+<div class="backup2ftp-container">
+	<p><strong>Выбрать файлы для копирования:</strong></p>
+	<div class="scroller">
+		<table cellpadding="0" cellspacing="0" width="100%">
 
-<?
+		<?
 
-$y = 0;
+		$y = 0;
 
-foreach($files as $file) {
+		foreach($files as $file) {
 
-	$y++;
+			$y++;
 
-	echo '<tr style="background-color:#' . (($y % 2 == 0) ? 'f0f0f0' : 'fff') . ';"><td width="5%" style="padding:5px;"><input type="checkbox" xchecked="checked" class="files" id="' . $file . '" name="' . $file . '"></td><td width="60%" style="padding:5px;"><label for="' . $file . '">' . $file . '</label></td><td width="15%" style="padding:5px;">' . round(filesize($_SERVER['DOCUMENT_ROOT'] . "/bitrix/backup/" . $file) / 1024 / 1024, 2) . ' Мб</td><td width="20%" style="padding:5px;">' . date("d-m-Y H:i:s", filemtime($_SERVER['DOCUMENT_ROOT'] . "/bitrix/backup/" . $file)) . '</td></tr>';
+			echo
 
-}
+				'<tr style="background-color:#' . (($y % 2 == 0) ? 'f0f0f0' : 'fff') . ';">'
+					. '<td width="5%">'
+						. '<input type="checkbox" class="files" id="' . $file . '" name="' . $file . '">'
+					. '</td>'
+					. '<td width="60%">'
+						. '<label for="' . $file . '">' . $file . '</label>'
+					. '</td>'
+					. '<td width="15%">'
+						. round(filesize($_SERVER['DOCUMENT_ROOT'] . "/bitrix/backup/" . $file) / 1024 / 1024, 2) . ' Мб'
+					. '</td>'
+					. '<td width="20%">'
+						. date("d-m-Y H:i:s", filemtime($_SERVER['DOCUMENT_ROOT'] . "/bitrix/backup/" . $file))
+					. '</td>'
+				. '</tr>';
 
-?>
+		}
 
-</table>
+		?>
+
+		</table>
+	</div>
+
+	<input type="button" value="Запустить копирование" onClick="startFileCopy();" />
+	<table class="plain">
+		<tr><td>Сервер:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "domain") ?></strong></td></tr>
+		<tr><td>Порт:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "port") ?></strong></td></tr>
+		<tr><td>Каталог:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "dir") ?></strong></td></tr>
+		<tr><td colspan="2"><a href="/bitrix/admin/settings.php?lang=ru&mid=backup2ftp">Изменить настройки</a></td></tr>
+	</table>
 </div>
-
-<input type="button" value="Запустить копирование" onClick="startFileCopy();" />
-<table style="margin-top:10px">
-	<tr><td>Сервер:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "domain") ?></strong></td></tr>
-	<tr><td>Порт:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "port") ?></strong></td></tr>
-	<tr><td>Каталог:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "dir") ?></strong></td></tr>
-	<tr><td colspan="2"><a href="/bitrix/admin/settings.php?lang=ru&mid=backup2ftp">Изменить настройки</a></td></tr>
-</table>
 
 <script type="text/javascript">
 

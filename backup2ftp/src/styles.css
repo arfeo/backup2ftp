@@ -1,0 +1,16 @@
+.backup2ftp-container .scroller {
+	background-color: #fff;
+	min-height: 300px;
+	max-height: 300px;
+	overflow: auto;
+	border: 1px solid #aaa;
+	margin-bottom: 10px;
+}
+
+.backup2ftp-container .scroller table td {
+	padding: 5px;
+}
+
+.backup2ftp-container table.plain {
+	margin-top: 10px;
+}

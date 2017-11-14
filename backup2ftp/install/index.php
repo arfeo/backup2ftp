@@ -56,9 +56,12 @@ class backup2ftp extends CModule {
 
     public function installFiles() {
 
+        @mkdir($_SERVER["DOCUMENT_ROOT"] . "/bitrix/css/backup2ftp/", 0750, true);
+
         copy($this->MODULE_ROOT_DIR . "/install/admin/backup2ftp_copy.php", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/backup2ftp_copy.php");
         copy($this->MODULE_ROOT_DIR . "/install/admin/backup2ftp_index.php", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/backup2ftp_index.php");
         copy($this->MODULE_ROOT_DIR . "/install/admin/backup2ftp_log.php", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/backup2ftp_log.php");
+        copy($this->MODULE_ROOT_DIR . "/src/styles.css", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/css/backup2ftp/styles.css");
 
         return true;
 
@@ -69,6 +72,9 @@ class backup2ftp extends CModule {
         unlink($_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/backup2ftp_copy.php");
         unlink($_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/backup2ftp_index.php");
         unlink($_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/backup2ftp_log.php");
+        unlink($_SERVER["DOCUMENT_ROOT"] . "/bitrix/css/backup2ftp/styles.css");
+
+        @rmdir($_SERVER["DOCUMENT_ROOT"] . "/bitrix/css/backup2ftp/");
 
         return true;
 
