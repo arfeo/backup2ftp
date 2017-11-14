@@ -85,7 +85,7 @@ foreach($messages as $message) {
 
 		$m = explode(";", $message);
 
-		echo '<tr style="background-color:#' . (($y % 2 == 0) ? 'f0f0f0' : 'fff') . ';"><td width="20%" style="padding:5px;">' . $m[0] . '</td><td width="80%" style="padding:5px;">' . $m[1] . '</td></tr>';
+		echo '<tr style="background-color:#' . (($y % 2 == 0) ? 'f0f0f0' : 'fff') . ';"><td width="20%" style="padding:5px;">' . $m[0] . '</td><td width="80%" style="padding:5px;"><span style="color:' . ((mb_stripos($message, "невозможно") !== false || mb_stripos($message, "не указаны") !== false || mb_stripos($message, "не удалось") !== false) ? 'red' : ((mb_stripos($message, "запуск") !== false || mb_stripos($message, "завершение") !== false) ? 'gray' : 'black')) . '">' . $m[1] . '</span></td></tr>';
 
 	}
 

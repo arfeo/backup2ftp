@@ -2,11 +2,15 @@
 
 define('APP_TMP_DIR', '/var/tmp/');
 
+$_SERVER["DOCUMENT_ROOT"] = realpath(dirname(__FILE__)."/../../../..");
+
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/func.php";
+
 $log = APP_TMP_DIR . "backup2ftp.log";
-$stamp = date("d-m-Y H:i:s");
-$div = ";";
 
 if(isset($_GET["files"]) && !empty($_GET["files"])) {
+
+	file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Запуск копирования файлов (сервер " . $_GET["domain"] . ":" . $_GET["port"] . ")\n", LOCK_EX | FILE_APPEND);
 
 	$files = explode(",", $_GET["files"]);
 
@@ -22,60 +26,34 @@ if(isset($_GET["files"]) && !empty($_GET["files"])) {
 
 			if($login_result === true) {
 
-				ftp_pasv($ftp, true);
-
-				foreach($files as $file) {
-					
-					if(ftp_put($ftp, $_GET["dir"] . $file, __DIR__ . "/../../../backup/" . $file, FTP_BINARY)) {
-
-						file_put_contents($log, $stamp . $div . basename($file) . " успешно загружен на сервер (" . $_GET["domain"] . ":" . $_GET["port"] . ")\n", LOCK_EX | FILE_APPEND);
-
-					} else {
-
-						file_put_contents($log, $stamp . $div . "Не удалось загрузить " . basename($file) . " на сервер (" . $_GET["domain"] . ":" . $_GET["port"] . ")\n", LOCK_EX | FILE_APPEND);
-
-					}
-
-				}
+				copy_files($ftp, $files, $log);
 
 			} else {
 
-				file_put_contents($log, $stamp . $div . "Невозможно соединиться с сервером " . $_GET["domain"] . ":" . $_GET["port"] . "\n", LOCK_EX | FILE_APPEND);
+				file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Невозможно соединиться с сервером\n", LOCK_EX | FILE_APPEND);
 
 			}
 
 		} else {
 
-			ftp_pasv($ftp, true);
-
-			foreach($files as $file) {
-					
-				if(ftp_put($ftp, $_GET["dir"] . $file, __DIR__ . "/../../../backup/" . $file, FTP_BINARY)) {
-
-					file_put_contents($log, $stamp . $div . basename($file) . " успешно загружен на сервер (" . $_GET["domain"] . ":" . $_GET["port"] . ")\n", LOCK_EX | FILE_APPEND);
-
-				} else {
-
-					file_put_contents($log, $stamp . $div . "Не удалось загрузить " . basename($file) . " на сервер (" . $_GET["domain"] . ":" . $_GET["port"] . ")\n", LOCK_EX | FILE_APPEND);
-
-				}
-
-			}
+			copy_files($ftp, $files, $log);
 
 		}
 
 		// Закрытие соединения
 		ftp_close($ftp);
 
+		file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Завершение копирования файлов\n", LOCK_EX | FILE_APPEND);
+
 	} else {
 
-		file_put_contents($log, $stamp . $div . "Невозможно соединиться с сервером " . $_GET["domain"] . ":" . $_GET["port"] . "\n", LOCK_EX | FILE_APPEND);
+		file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Невозможно соединиться с сервером\n", LOCK_EX | FILE_APPEND);
 
 	}
 
 } else {
 
-	file_put_contents($log, $stamp . $div . "Не указаны файлы для копирования\n", LOCK_EX | FILE_APPEND);
+	file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Не указаны файлы для копирования\n", LOCK_EX | FILE_APPEND);
 
 }
 
