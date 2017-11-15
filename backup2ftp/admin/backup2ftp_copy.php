@@ -4,7 +4,7 @@ define('APP_TMP_DIR', '/var/tmp/');
 
 $_SERVER["DOCUMENT_ROOT"] = realpath(dirname(__FILE__)."/../../../..");
 
-require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/func.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/functions.php";
 
 $log = APP_TMP_DIR . "backup2ftp.log";
 

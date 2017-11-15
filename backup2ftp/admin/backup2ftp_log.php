@@ -8,7 +8,7 @@ define('APP_TMP_DIR', '/var/tmp/');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/main/include/prolog_admin_before.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/main/include/prolog_admin_after.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/func.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/functions.php";
 
 $APPLICATION->SetTitle("Журнал");
 $APPLICATION->SetAdditionalCSS("/bitrix/css/backup2ftp/styles.css");

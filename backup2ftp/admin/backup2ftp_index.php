@@ -7,7 +7,7 @@ defined('ADMIN_MODULE_NAME') or define('ADMIN_MODULE_NAME', 'backup2ftp');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/main/include/prolog_admin_before.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/main/include/prolog_admin_after.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/func.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/backup2ftp/src/functions.php";
 
 $APPLICATION->SetTitle("Копирование на сервер FTP");
 $APPLICATION->SetAdditionalCSS("/bitrix/css/backup2ftp/styles.css");
