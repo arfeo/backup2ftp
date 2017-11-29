@@ -57,7 +57,7 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 			} else {
 
 				// Выставляем флаг с результатом выполнения операции
-				setcookie("backup2ftp_status", "error", time() + 3600);
+				setcookie("backup2ftp_status", "error_auth", time() + 3600);
 
 				header("Location: $back");
 
@@ -65,22 +65,36 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 
 		} else {
 
-			exec(
+			// Проверяем возможность подключения к анонимному серверу
+			$login_result = ftp_login($ftp, "anonymous", "");
 
-				"php-cgi -f " . __DIR__ . "/backup2ftp_copy.php "
-				. "domain=" . Option::get(ADMIN_MODULE_NAME, "domain") . " "
-				. "port=" . Option::get(ADMIN_MODULE_NAME, "port") . " "
-				. "dir=" . Option::get(ADMIN_MODULE_NAME, "dir") . " "
-				. "files=" . $files . " "
-				. "auth=" . Option::get(ADMIN_MODULE_NAME, "auth") . " "
-				. "> /dev/null 2>&1 &"
+			if($login_result === true) {
 
-			);
+				exec(
 
-			// Выставляем флаг с результатом выполнения операции
-			setcookie("backup2ftp_status", "ok", time() + 3600);
+					"php-cgi -f " . __DIR__ . "/backup2ftp_copy.php "
+					. "domain=" . Option::get(ADMIN_MODULE_NAME, "domain") . " "
+					. "port=" . Option::get(ADMIN_MODULE_NAME, "port") . " "
+					. "dir=" . Option::get(ADMIN_MODULE_NAME, "dir") . " "
+					. "files=" . $files . " "
+					. "auth=" . Option::get(ADMIN_MODULE_NAME, "auth") . " "
+					. "> /dev/null 2>&1 &"
 
-			header("Location: $back");
+				);
+
+				// Выставляем флаг с результатом выполнения операции
+				setcookie("backup2ftp_status", "ok", time() + 3600);
+
+				header("Location: $back");
+
+			} else {
+
+				// Выставляем флаг с результатом выполнения операции
+				setcookie("backup2ftp_status", "error_auth", time() + 3600);
+
+				header("Location: $back");
+
+			}
 
 		}
 
@@ -90,7 +104,7 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 	} else {
 
 		// Выставляем флаг с результатом выполнения операции
-		setcookie("backup2ftp_status", "error", time() + 3600);
+		setcookie("backup2ftp_status", "error_connect", time() + 3600);
 
 		header("Location: $back");
 
@@ -113,9 +127,15 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 
 				break;
 			
-			case 'error':
+			case 'error_connect':
 				
 				CAdminMessage::showMessage("Невозможно соединиться с сервером FTP. Проверьте настройки.");
+
+				break;
+
+			case 'error_auth':
+
+				CAdminMessage::showMessage("Ошибка авторизации. Проверьте настройки.");
 
 				break;
 
@@ -170,6 +190,7 @@ if($request->get('start_copy') && $request->get('start_copy') == 'true' && $requ
 		<tr><td>Сервер:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "domain") ?></strong></td></tr>
 		<tr><td>Порт:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "port") ?></strong></td></tr>
 		<tr><td>Каталог:</td><td><strong><?= Option::get(ADMIN_MODULE_NAME, "dir") ?></strong></td></tr>
+		<tr><td>Авторизация:</td><td><strong><?= (Option::get(ADMIN_MODULE_NAME, "auth") == "on") ? "Вкл." : "Выкл." ?></strong></td></tr>
 		<tr><td colspan="2"><a href="/bitrix/admin/settings.php?lang=ru&mid=backup2ftp">Изменить настройки</a></td></tr>
 	</table>
 </div>

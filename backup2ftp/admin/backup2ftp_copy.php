@@ -30,13 +30,24 @@ if(isset($_GET["files"]) && !empty($_GET["files"])) {
 
 			} else {
 
-				file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Невозможно соединиться с сервером\n", LOCK_EX | FILE_APPEND);
+				file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Ошибка авторизации\n", LOCK_EX | FILE_APPEND);
 
 			}
 
 		} else {
 
-			copy_files($ftp, $files, $log);
+			// Проверяем возможность подключения к анонимному серверу
+			$login_result = ftp_login($ftp, "anonymous", "");
+
+			if($login_result === true) {
+
+				copy_files($ftp, $files, $log);
+
+			} else {
+
+				file_put_contents($log, date("d-m-Y H:i:s") . ";" . "Ошибка авторизации\n", LOCK_EX | FILE_APPEND);
+
+			}
 
 		}
 
