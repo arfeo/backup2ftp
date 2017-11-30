@@ -41,14 +41,14 @@ if(!empty($save) && $request->isPost() && check_bitrix_sessid()) {
 
         CAdminMessage::showMessage(array(
 
-            "MESSAGE" => Loc::getMessage("REFERENCES_OPTIONS_SAVED"),
+            "MESSAGE" => Loc::getMessage("PREFERENCES_OPTIONS_SAVED"),
             "TYPE" => "OK",
 
         ));
 
     } else {
 
-        CAdminMessage::showMessage(Loc::getMessage("REFERENCES_INVALID_VALUE"));
+        CAdminMessage::showMessage(Loc::getMessage("PREFERENCES_INVALID_VALUE"));
 
     }
 

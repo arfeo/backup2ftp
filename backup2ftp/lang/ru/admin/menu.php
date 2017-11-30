@@ -1,4 +1,4 @@
-<?php
+<?
 
 $MESS['BACKUP2FTP_MENU_TITLE'] = 'Backup2FTP';
 $MESS['BACKUP2FTP_COPY_MENU_TITLE'] = 'Копирование';
